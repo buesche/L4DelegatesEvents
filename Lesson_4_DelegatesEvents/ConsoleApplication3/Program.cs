@@ -8,8 +8,6 @@ namespace ConsoleApplication3
 {
     class Program
     {
-
-
         /// <summary>
         /// You will find the Lesson here:
         /// https://www.youtube.com/watch?v=8e2GEFNctwQ
@@ -22,25 +20,26 @@ namespace ConsoleApplication3
             //This makes a a subscriber
             p.cashEvent += P_cashEvent;
 
-            //Subscriber 
-            p.cashEvent += () => Console.WriteLine("Congratulation!!");
+            //Subscriber 2, mit Lambda
+            p.cashEvent += (object s, CashEventArgs e) => Console.WriteLine(e.Message);
+            //alternativ p.cashEvent += (s, e) => Console.WriteLine(e.Message);
 
             p.AddCash(60);
             p.AddCash(60);
             Console.ReadKey();
         }
 
-        private static void P_cashEvent()
+        private static void P_cashEvent(object sender, CashEventArgs e)
         {
-            Console.WriteLine("Fabian is rich, he has gained 100 Dollars!!!");
+            Console.WriteLine(e.Message);
         }
     }
 
     class Person
     {
-        public delegate void MyEventhandler();
+        public delegate void MyCashEventHandler(object person, CashEventArgs e);
 
-        public event MyEventhandler cashEvent;
+        public event MyCashEventHandler cashEvent;
 
         public string Name { get; set; }
 
@@ -64,7 +63,8 @@ namespace ConsoleApplication3
                     //let our subscriber know!
                     if(cashEvent != null) //Make sure, that there are some subscribers
                     {
-                        cashEvent(); //fires the event
+                        CashEventArgs e = new CashEventArgs(String.Format("{0} is rich, he has gained 100 Dollars!!!", Name));
+                        cashEvent(this, e); //fires the event
                     }
                 }
             }
@@ -76,5 +76,15 @@ namespace ConsoleApplication3
             Cash += amount;
         }
 
+    }
+
+    public class CashEventArgs : EventArgs
+    {
+        public string Message { get; set; }
+
+        public CashEventArgs(String message)
+        {
+            Message = message;
+        }
     }
 }

@@ -8,8 +8,6 @@ namespace ConsoleApplication3
 {
     class Program
     {
-
-
         /// <summary>
         /// You will find the Lesson here:
         /// https://www.youtube.com/watch?v=8e2GEFNctwQ
@@ -24,6 +22,7 @@ namespace ConsoleApplication3
 
             //Subscriber 2, mit Lambda
             p.cashEvent += (object s, CashEventArgs e) => Console.WriteLine(e.Message);
+            //alternativ p.cashEvent += (s, e) => Console.WriteLine(e.Message);
 
             p.AddCash(60);
             p.AddCash(60);
@@ -38,9 +37,9 @@ namespace ConsoleApplication3
 
     class Person
     {
-        public delegate void MyEventhandler(object sender, CashEventArgs e);
+        public delegate void MyCashEventHandler(object person, CashEventArgs e);
 
-        public event MyEventhandler cashEvent;
+        public event MyCashEventHandler cashEvent;
 
         public string Name { get; set; }
 
